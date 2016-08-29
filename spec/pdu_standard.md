@@ -1,6 +1,6 @@
 # PDU Shell Standard
 
-#### Version 1.0.0
+#### Version 1.1.0
 
 
 ## Introduction
@@ -12,7 +12,8 @@ The PDU Shell Standard is a project used to define a standard for all PDU Shells
 
 Version | Date | Notes
 --- | --- | ---
-1.0.0 | 2016-02-15 | First release of the PDU Shell Standard
+1.1.0 | 2016-08-25 | 1. Removed the Power Managed Device family from the standard. For a generic resource with a power port please refer to the Resource standard (generic Shell). 2. Attributes which aren't user-input changed from being read-only to having the rule "Admin only" enabled. 3. Behavior of setting the resource live status on poewr on/off/cycle was clarified in the commands notes section.
+1.0.0 | 2016-07-04 | First release of the PDU Shell Standard
 
 
 ## Definitions
@@ -38,26 +39,17 @@ The dependency to cloudshell-automation-api will be to the latest Patch version 
 
 ## Data Model Structure
 ### Families & Models
-The PDU Shell Standard supports PDUs and the power managed device associated that is connected to the PDU.
+The PDU Shell Standard supports PDUs with power sockets.
 
 
 #### PDU Data Model
 - PDU
   - Power Socket
 
-#### Power Managed Device Data Model
-- Power Managed Device
-  - Power Port
-
-
 ##### Example:
 
 - Family: PDU, Model: Raritan PDU
   - Family: Power Socket, Model: Generic Power Socket
-
-
-  - Family: Power Managed Device, Model: Generic Power Managed Device
-    - Family: Power Port, Model: Generic Power Port
 
 
 In order for the PDU shell to be used correctly within CloudShell both the PDU and devices connected to the PDU should be modeled in CloudShell, and the PDU sockets should be defined as “physically connected” to the devices power ports. Once this configuration is in place the devices connected to the PDU will get the “Power On”, “Power Off” and “Power Cycle” commands and those commands will be applicable on the power ports. The power ports can be defined on any type of device (for example, a networking device). The PDU shell comes with an OOB power managed device model that can be used to model in CloudShell a device connected to the PDU via a power port.
@@ -71,26 +63,18 @@ Family | Rules
 --- | ---
 PDU | Searchable, IsPowerSwitch
 Power Socket | Searchable, Connectable, Locked By Default
-Power Managed Device | Searchable
-Power Port | 	Searchable, Connectable, Locked By Default
-
-
 
 #### Resource Name and Address
 Family | Model | Resource Name | Resource Address
 --- | --- | --- | ---
 PDU | [Vendor] PDU | (user defined) | Searchable
 Power Socket | Generic Power Socket | (name in device) | (name in device)
-Power Managed Device | Generic Power Managed Device | Searchable | Searchable
-Power Port | Generic Power Port | PP[Container ID][ID] | PP[Container ID][ID]
-
-Note: The [ID] for each sub-resource is taken from the device itself (corresponds to the names defined in the device).
 
 
 ## Attributes
 #### Guidelines
-- Attributes which aren’t relevant to a devices won’t be populated by the driver.
-- All attributes which aren't user-input are "read only"
+- Attributes which aren’t relevant to a device won’t be populated by the driver.
+- All attributes which aren't user-input should have the rule "Admin only" enabled.
 - The attribute rules are as follows - all attributes which are user input should have the rule "Configuration" enabled, all attributes which aren't user input should have the rules "Settings" and "Available For Abstract Resources" enabled.
 - It is possible to customize the attribute rules selection after importing the Shell to CloudShell.
 - Attributes shouldn’t be removed.
@@ -125,34 +109,12 @@ Sessions Concurrency Limit | Numeric, default is 1 (no concurrency) | Yes
 No Attributes
 
 
-#####  Generic Power Managed Device
-
-No Attributes
-
-
-#####  Generic Power Port
-
-Attribute Name | Details | User input?
---- | --- | ---
-Model | | No
-Serial Number || No
-Version | | No
-Port Description | | No
-
-
-
 ## Commands
-The following chapter describes the list of commands that needs to be supported by the shell. it includes command name, parameters and description of the functionality.
+The following chapter describes the list of commands that needs to be supported by the shell. It includes command name, parameters and description of the functionality.
 
 **Interface Implementation** - When creating a new shell according to the standard it is OK not to implement all commands and/or implement additional command, but a command with a functionality that fits one of the predefined list commands should be implemented according to the standard.
 
 **Error Handling**: Command outputs: On failure an exception containing the error will be thrown and the command will be shown as failed. A failure is defined as any scenario in which the command didn’t complete its expected behavior, regardless if the issue originates from the command’s input, device or the command infrastructure itself. On success the command will just return as passed with no output.
-
-
-
-
-
-
 
 
 ### Get Inventory (Shell Autoload)
@@ -205,6 +167,9 @@ def PowerOn(context, ports):
 ###### Description
 Starts the power for the selected socket.
 
+###### Notes
+This command sets the live status of the resource connected to the PDU to "Online" with description "Resource powered on".
+
 ###### Display Name
 Power On  
 
@@ -224,6 +189,9 @@ def PowerOff(context, ports):
 ###### Description
 Stops the power for the selected socket.
 
+###### Notes
+This command sets the live status of the resource connected to the PDU to "Offline" with description "Resource powered off".
+
 ###### Display Name
 Power Off  
 
@@ -242,6 +210,9 @@ def PowerCycle(context, ports, delay):
 ```  
 ###### Description
 Stops and then starts the power for the selected socket.   - CLI based
+
+###### Notes
+This command sets the live status of the resource connected to the PDU to "Online" with description "Resource powered on".
 
 ###### Display Name
 Power Cycle
