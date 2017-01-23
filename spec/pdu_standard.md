@@ -1,6 +1,6 @@
 # PDU Shell Standard
 
-#### Version 1.1.0
+#### Version 2.0.0
 
 
 ## Introduction
@@ -12,6 +12,7 @@ The PDU Shell Standard is a project used to define a standard for all PDU Shells
 
 Version | Date | Notes
 --- | --- | ---
+2.0.0 | 2017-01-23 | Changed the type of the following attributes to "Password": "SNMP Read Community", "SNMP Write Community" and "SNMP V3 Password". This change is NOT backwards compatible
 1.1.0 | 2016-08-25 | 1. Removed the Power Managed Device family from the standard. For a generic resource with a power port please refer to the Resource standard (generic Shell). 2. Attributes which aren't user-input changed from being read-only to having the rule "Admin only" enabled. 3. Behavior of setting the resource live status on poewr on/off/cycle was clarified in the commands notes section.
 1.0.0 | 2016-07-04 | First release of the PDU Shell Standard
 
@@ -90,10 +91,10 @@ Password | Attribute of type Password | Yes
 Firmware Version | | No
 Vendor | | No
 Model | | No
-SNMP Read Community | | Yes
-SNMP Write Community | | Yes
+SNMP Read Community | Attribute of type Password | Yes
+SNMP Write Community | Attribute of type Password | Yes
 SNMP V3 User | | Yes
-SNMP V3 Password | | Yes
+SNMP V3 Password | Attribute of type Password | Yes
 SNMP V3 Private Key | | Yes
 SNMP Version | Possible values – v1, v2c, v3 | Yes
 Console Server IP Address | | Yes
