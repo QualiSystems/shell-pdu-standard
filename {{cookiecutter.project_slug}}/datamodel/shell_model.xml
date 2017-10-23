@@ -59,9 +59,7 @@
                 <AttributeValue Name="User" Value="" />
                 <AttributeValue Name="Password" Value="3M3u7nkDzxWb0aJ/IZYeWw==" />
                 <AttributeValue Name="Vendor" Value="" />
-                <AttributeValue Name="Location" Value="" />
                 <AttributeValue Name="Model" Value="" />
-                <AttributeValue Name="Backup Location" Value="" />
                 <AttributeValue Name="SNMP Read Community" Value="" />
                 <AttributeValue Name="SNMP Write Community" Value="" />
                 <AttributeValue Name="SNMP V3 Password" Value="" />
